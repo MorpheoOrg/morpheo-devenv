@@ -1,0 +1,9 @@
+[submodule "storage"]
+	path = storage
+	url = git@github.com:MorpheoOrg/storage.git
+[submodule "compute"]
+	path = compute
+	url = git@github.com:MorpheoOrg/compute.git
+[submodule "go-packages"]
+	path = go-packages
+	url = git@github.com:MorpheoOrg/go-packages.git
