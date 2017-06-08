@@ -32,7 +32,6 @@ services:
     depends_on:
     - nsqlookupd
     - dind-executor
-    - orchestrator
     - storage
 
   # Docker-in-Docker container to run untrusted code
@@ -84,7 +83,7 @@ services:
 
   # Storage
   storage:
-    build: ./storage-api
+    build: ./storage
     restart: unless-stopped
     command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD}
     ## Stops the container from taking up all the cache memory on big file
