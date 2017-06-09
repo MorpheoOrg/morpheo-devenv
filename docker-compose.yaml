@@ -5,7 +5,7 @@ services:
   compute:
     build: ./compute/api
     restart: unless-stopped
-    mem_limit: 50000000
+    mem_limit: 16m
     memswap_limit: 0
     command: -host 0.0.0.0 -port 80 -broker nsq -broker-host nsqd -broker-port 4150
     ports:
@@ -19,7 +19,7 @@ services:
   compute-worker:
     build: ./compute/worker
     restart: unless-stopped
-    mem_limit: 50000000
+    mem_limit: 64m
     memswap_limit: 0
     environment:
     - "DOCKER_HOST=tcp://dind-executor:2376"
@@ -37,7 +37,7 @@ services:
   # Docker-in-Docker container to run untrusted code
   dind-executor:
     build: ./go-packages/utils/dind-daemon
-    mem_limit: 1000000000
+    mem_limit: 512m
     memswap_limit: 0
     restart: unless-stopped
     privileged: true
@@ -50,7 +50,7 @@ services:
   # Nsqlookupd: service discovery for Nsqd
   nsqlookupd:
     image: nsqio/nsq:latest
-    mem_limit: 50000000
+    mem_limit: 16m
     memswap_limit: 0
     restart: unless-stopped
     command: /nsqlookupd
@@ -62,7 +62,7 @@ services:
   # Nsqd: the distributed broker
   nsqd:
     image: nsqio/nsq:latest
-    mem_limit: 50000000
+    mem_limit: 32m
     memswap_limit: 0
     restart: unless-stopped
     command: /nsqd --lookupd-tcp-address="nsqlookupd:4160"
@@ -72,7 +72,7 @@ services:
   # Nsq Admin frontend
   nsqadmin:
     image: nsqio/nsq:latest
-    mem_limit: 50000000
+    mem_limit: 16m
     memswap_limit: 0
     restart: unless-stopped
     command: /nsqadmin --lookupd-http-address="nsqlookupd:4161"
@@ -88,8 +88,8 @@ services:
     command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD}
     ## Stops the container from taking up all the cache memory on big file
     ## uploads
-    mem_limit: 100000000
-    memswap_limit: 100000000
+    mem_limit: 256m
+    memswap_limit: 1024m
     volumes:
     - ./data/storage:/data
     ports:
@@ -102,7 +102,7 @@ services:
   # Postgres instance for the storage service
   postgres:
     image: postgres:alpine
-    mem_limit: 200000000
+    mem_limit: 64m
     memswap_limit: 0
     volumes:
     - ./data/postgres:/var/lib/postgres

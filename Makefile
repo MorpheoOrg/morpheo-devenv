@@ -61,4 +61,4 @@ devenv-start: link bin
 devenv-clean:
 	$(COMPOSE_CMD) down
 devenv-logs:
-	$(COMPOSE_CMD) logs --follow storage compute compute-worker orchestrator dind-executor
+	$(COMPOSE_CMD) logs --follow storage compute compute-worker dind-executor
