@@ -1,13 +1,10 @@
 Development environment for the Morpheo project
 ===============================================
 
-This repository holds a docker-compose environment for the Morpheo project. It
-embeds all the different projects' code and libs as Git submodules. You can hack
-on the project's code directly in Git submodules. For developers with direct
-push right to this repository, please be sure to read and understand 100% of the
-[Git documentation about submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) for God's sake !
+This repository holds a docker-compose environment for the Morpheo project. To use it,
+the parent directory must have the git repositories pf go-packages, storage and compute.
 
-It also contains a Makefile that detects changes in Git submodules and
+It also contains a Makefile that detects changes in those repositories and
 automatically rebuilds what needs to be rebuilt (and that only) and updates the
 dev. environment. Interpreted code (Python, frontend code) should be mounted as
 a volume directly in the appropriate container, therefore you should have to
