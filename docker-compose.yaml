@@ -3,7 +3,7 @@ version: '2'
 services:
   # Compute: HTTP API and task producer
   compute:
-    build: ./compute/api
+    build: ../morpheo-compute/api
     restart: unless-stopped
     mem_limit: 16m
     memswap_limit: 0
@@ -17,13 +17,13 @@ services:
 
   # Compute: task consumer
   compute-worker:
-    build: ./compute/worker
+    build: ../morpheo-compute/worker
     restart: unless-stopped
     mem_limit: 64m
     memswap_limit: 0
     environment:
     - "DOCKER_HOST=tcp://dind-executor:2376"
-    command: -nsqlookupd-urls "nsqlookupd:4161" -storage-host "storage" -storage-user ${STORAGE_AUTH_USER} -storage-password ${STORAGE_AUTH_PASSWORD} -learn-timeout 5m
+    command: -nsqlookupd-urls "nsqlookupd:4161" -storage-host "storage" -storage-user ${STORAGE_AUTH_USER} -storage-password ${STORAGE_AUTH_PASSWORD} -learn-timeout 5m -predict-timeout 5m
     privileged: true
     networks:
     - internal
@@ -36,7 +36,7 @@ services:
 
   # Docker-in-Docker container to run untrusted code
   dind-executor:
-    build: ./go-packages/utils/dind-daemon
+    build: ../morpheo-go-packages/utils/dind-daemon
     mem_limit: 512m
     memswap_limit: 0
     restart: unless-stopped
@@ -83,7 +83,7 @@ services:
 
   # Storage
   storage:
-    build: ./storage
+    build: ../morpheo-storage/api
     restart: unless-stopped
     command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD}
     ## Stops the container from taking up all the cache memory on big file
@@ -107,9 +107,9 @@ services:
     volumes:
     - ./data/postgres:/var/lib/postgres
     environment:
-    - POSTGRES_PASSWORD=tooshort
-    - POSTGRES_USER=storage
-    - POSTGRES_DB=morpheo_storage
+    - POSTGRES_PASSWORD=p
+    - POSTGRES_USER=u
+    - POSTGRES_DB=db
     networks:
       - internal
 
