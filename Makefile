@@ -31,33 +31,38 @@
 #
 # The fact that you are presently reading this means that you have had
 # knowledge of the CeCILL license and that you accept its terms.
-#
-BIN_TARGETS = compute storage
-LINK_TARGETS = $(foreach TARGET,$(BIN_TARGETS),$(TARGET)-link)
 
-COMPOSE_CMD = STORAGE_PORT=8081 COMPUTE_PORT=8082 ORCHESTRATOR_PORT=8083 \
-							NSQ_ADMIN_PORT=8085 STORAGE_AUTH_USER=u \
-							STORAGE_AUTH_PASSWORD=p docker-compose
+BIN_TARGETS = morpheo-compute morpheo-storage
+VENDOR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-vendor)
+
+COMPOSE_CMD = STORAGE_PORT=8081 COMPUTE_PORT=8082 ORCHESTRATOR_PORT=8083 NSQ_ADMIN_PORT=8085 \
+							STORAGE_AUTH_USER=u STORAGE_AUTH_PASSWORD=p \
+							ORCHESTRATOR_AUTH_USER=test ORCHESTRATOR_AUTH_PASSWORD=test \
+							docker-compose
 
 # Target configuration
 .DEFAULT: devenv-start
-.PHONY: bin $(BIN_TARGETS) link $(LINK_TARGETS) devenv-start devenv-clean
+.PHONY: $(BIN_TARGETS) $(VENDOR_TARGETS) devenv-start devenv-stop devenv-clean devenv-logs
 
-bin: $(BIN_TARGETS)
+$(BIN_TARGETS):
+	@echo "\n**** $(subst morpheo-,,$@): builds ****" | tr a-z A-Z
+	@$(MAKE) -C ../$@ bin
 
-$(BIN_TARGETS): %: %-link
-	$(MAKE) -C $@ bin
+$(VENDOR_TARGETS):
+	@echo "\n**** $(patsubst morpheo-%-vendor,%,$@): vendor update ****" | tr a-z A-Z
+	@echo "[$(patsubst morpheo-%-vendor,%,$@)] Updating vendor..."
+	@$(MAKE) -C ../$(subst -vendor,,$@) vendor
 
-link: $(LINK_TARGETS)
+	@echo "[devenv] Replacing morpheo-go-packages by local repository..."
+	@rm -rf ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
+	@mkdir ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
+	@cp -Rf ../morpheo-go-packages ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg/morpheo-go-packages
 
-$(LINK_TARGETS):
-	$(MAKE) -C $(subst -link,,$@) vendor
-	@echo "Symlinking local go-packages repo in $(subst -link,,$@) vendor dir"
-	rm -rf $(subst -link,,$@)/vendor/github.com/MorpheoOrg/go-packages
-	cp -Rf go-packages $(subst -link,,$@)/vendor/github.com/MorpheoOrg/go-packages
-
-devenv-start: link bin
+devenv-start: $(VENDOR_TARGETS) $(BIN_TARGETS)
+	@echo  "\n**** DEVENV: DOCKER-COMPOSE UP ****"
 	$(COMPOSE_CMD) up -d --build
+devenv-stop:
+	$(COMPOSE_CMD) stop
 devenv-clean:
 	$(COMPOSE_CMD) down
 devenv-logs:
