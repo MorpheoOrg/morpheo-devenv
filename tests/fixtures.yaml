@@ -1,0 +1,90 @@
+# ORCHESTRATOR
+orchestrator:
+  algo:
+  - uuid: 0885fe91-da5a-4896-988f-3625b53b38b9
+    name: example_sklearn.tar.gz
+    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
+
+  data:
+  - uuid: 8436d362-fe38-4d35-96c2-4496451758cf
+    problems:
+    - 2869781a-c481-4ed7-b88a-a5073bae8326
+  - uuid: 222af310-c8dc-4d5d-9447-250d6c1de4ac
+    problems:
+    - 2869781a-c481-4ed7-b88a-a5073bae8326
+  - uuid: 6c619a93-5989-4153-90b8-ba93328ebc5f
+    problems:
+    - 2869781a-c481-4ed7-b88a-a5073bae8326
+  - uuid: 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
+    problems:
+    - 2869781a-c481-4ed7-b88a-a5073bae8326
+
+  problem:
+  - uuid: 2869781a-c481-4ed7-b88a-a5073bae8326
+    workflow: e568587d-572c-4714-8084-378ed50d1c52
+    size_train_dataset: 1
+    test_dataset:
+    - 6c619a93-5989-4153-90b8-ba93328ebc5f
+    - 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
+
+  prediction:
+  - data:
+    - 8436d362-fe38-4d35-96c2-4496451758cf
+    - 222af310-c8dc-4d5d-9447-250d6c1de4ac
+    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
+
+  learnuplet:
+  - uuid: b248b7bc-cb01-4a05-a9d3-e62c818b462b
+    problem: e568587d-572c-4714-8084-378ed50d1c52
+    workflow: e568587d-572c-4714-8084-378ed50d1c52
+    train_data:
+    - 8436d362-fe38-4d35-96c2-4496451758cf
+    - 222af310-c8dc-4d5d-9447-250d6c1de4ac
+    test_data:
+    - 6c619a93-5989-4153-90b8-ba93328ebc5f
+    - 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
+    algo: 0885fe91-da5a-4896-988f-3625b53b38b9
+    model_start: 0885fe91-da5a-4896-988f-3625b53b38b9
+    model_end:
+    rank: 0
+    worker:
+    status: todo
+    perf:
+    train_perf:
+    test_perf:
+    timestamp_request: 646846200
+    timestamp_done:
+
+  preduplet:
+  - uuid: 1d0255fb-d728-440b-8fd2-be86e03cc22b
+    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
+    workflow: e568587d-572c-4714-8084-378ed50d1c52
+    model: 8ddf97a8-4a18-4449-a70a-cb392173ba31
+    data: 6c619a93-5989-4153-90b8-ba93328ebc5f
+    worker: bbed7da3-cdd9-4132-b664-f6245870910c
+    status: todo
+    timestamp_request: 646846200
+    timestamp_done:
+
+# ----------------------------------------------------------------------------
+
+# STORAGE
+storage:
+  algo:
+  - uuid: 0885fe91-da5a-4896-988f-3625b53b38b9
+    name: example_sklearn.tar.gz
+
+  data:
+  - uuid: 8436d362-fe38-4d35-96c2-4496451758cf
+  - uuid: 222af310-c8dc-4d5d-9447-250d6c1de4ac
+  - uuid: 6c619a93-5989-4153-90b8-ba93328ebc5f
+  - uuid: 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
+
+  model:
+  - uuid: 8ddf97a8-4a18-4449-a70a-cb392173ba31
+    algo: 0885fe91-da5a-4896-988f-3625b53b38b9
+
+  problem:
+  - uuid: e568587d-572c-4714-8084-378ed50d1c52
+    name: MESA TEST, for test purposes
+    description: For test purposes, description at https://github.com/MorpheoOrg/hypnogram-wf/blob/master/README.md
