@@ -53,10 +53,11 @@ $(VENDOR_TARGETS):
 	@echo "[$(patsubst morpheo-%-vendor,%,$@)] Updating vendor..."
 	@$(MAKE) -C ../$(subst -vendor,,$@) vendor
 
-	@echo "[devenv] Replacing morpheo-go-packages by local repository..."
+	@echo "[devenv] Replacing vendor/morpheo-go-packages by local repository..."
 	@rm -rf ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
 	@mkdir ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
 	@cp -Rf ../morpheo-go-packages ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg/morpheo-go-packages
+	@rm -rf ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg/morpheo-go-packages/vendor
 
 devenv-start: $(VENDOR_TARGETS) $(BIN_TARGETS)
 	@echo  "\n**** DEVENV: DOCKER-COMPOSE UP ****"
