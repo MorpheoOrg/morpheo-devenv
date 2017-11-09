@@ -32,40 +32,46 @@
 # The fact that you are presently reading this means that you have had
 # knowledge of the CeCILL license and that you accept its terms.
 
-BIN_TARGETS = morpheo-compute morpheo-storage
+BIN_TARGETS = compute storage
 VENDOR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-vendor)
 
 COMPOSE_CMD = STORAGE_PORT=8081 STORAGE_AUTH_USER=u STORAGE_AUTH_PASSWORD=p \
   			  ORCHESTRATOR_PORT=8083 ORCHESTRATOR_AUTH_USER=test ORCHESTRATOR_AUTH_PASSWORD=test \
   			  MONGO_PORT=27017 \
-			  COMPUTE_PORT=8082 NSQ_ADMIN_PORT=8085\
+			  COMPUTE_PORT=8082 NSQ_ADMIN_PORT=8085 \
 			  docker-compose
 
+PATH_METADATA = PATH_METADATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml
+PATH_DATA = PATH_DATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/data/fixtures
+
 # Target configuration
-.DEFAULT: devenv-start
-.PHONY: $(BIN_TARGETS) $(VENDOR_TARGETS) devenv-start devenv-stop devenv-clean devenv-logs
+.DEFAULT: up
+.PHONY: $(BIN_TARGETS) $(VENDOR_TARGETS) up stop logs down clean tests full-tests
 
 $(BIN_TARGETS):
-	@echo "\n**** $(subst morpheo-,,$@): builds ****" | tr a-z A-Z
-	@$(MAKE) -C ../$@ bin
+	@echo "\n**** [$@] builds ****" | tr a-z A-Z
+	@$(MAKE) -C ../morpheo-$@ bin
 
 $(VENDOR_TARGETS):
-	@echo "\n**** $(patsubst morpheo-%-vendor,%,$@): vendor update ****" | tr a-z A-Z
-	@echo "[$(patsubst morpheo-%-vendor,%,$@)] Updating vendor..."
-	@$(MAKE) -C ../$(subst -vendor,,$@) vendor
+	@echo "\n**** [$(subst -vendor,,$@)] vendor update ****" | tr a-z A-Z
+	@$(MAKE) -C ../morpheo-$(subst -vendor,,$@) vendor vendor-replace-local
 
-	@echo "[devenv] Replacing vendor/morpheo-go-packages by local repository..."
-	@rm -rf ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
-	@mkdir ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg
-	@cp -Rf ../morpheo-go-packages ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg/morpheo-go-packages
-	@rm -rf ../$(subst -vendor,,$@)/vendor/github.com/MorpheoOrg/morpheo-go-packages/vendor
-
-devenv-start: $(VENDOR_TARGETS) $(BIN_TARGETS)
-	@echo  "\n**** DEVENV: DOCKER-COMPOSE UP ****"
+up: $(VENDOR_TARGETS) $(BIN_TARGETS)
+	@echo  "\n**** [DEVENV] DOCKER-COMPOSE UP ****"
 	$(COMPOSE_CMD) up -d --build
-devenv-stop:
+stop:
 	$(COMPOSE_CMD) stop
-devenv-clean:
+logs:
+	$(COMPOSE_CMD) logs --follow storage compute compute-worker orchestrator
+down:
 	$(COMPOSE_CMD) down
-devenv-logs:
-	$(COMPOSE_CMD) logs --follow storage compute compute-worker dind-executor
+clean: down
+	sudo rm -rf data/mongo data/storage data/postgresql
+
+tests:
+	@$(PATH_METADATA) $(PATH_DATA) go run ./tests/integration.go
+
+full-tests:
+	$(MAKE) -C ../morpheo-compute tests
+	$(MAKE) -C ../morpheo-storage tests
+	$(MAKE) tests

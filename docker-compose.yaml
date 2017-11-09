@@ -4,6 +4,7 @@ services:
   # Compute: HTTP API and task producer
   compute:
     build: ../morpheo-compute/api
+    container_name: morpheo_compute
     restart: unless-stopped
     mem_limit: 16m
     memswap_limit: 0
@@ -18,12 +19,13 @@ services:
   # Compute: task consumer
   compute-worker:
     build: ../morpheo-compute/worker
+    container_name: morpheo_worker
     restart: unless-stopped
     mem_limit: 64m
     memswap_limit: 0
     environment:
     - "DOCKER_HOST=tcp://dind-executor:2376"
-    command: -nsqlookupd-urls "nsqlookupd:4161" -storage-host "storage" -storage-user ${STORAGE_AUTH_USER} -storage-password ${STORAGE_AUTH_PASSWORD} -learn-timeout 5m -predict-timeout 5m
+    command: -nsqlookupd-urls "nsqlookupd:4161" -storage-host "storage" -storage-user ${STORAGE_AUTH_USER} -storage-password ${STORAGE_AUTH_PASSWORD} -orchestrator-host "orchestrator" -orchestrator-port 5000 -learn-timeout 5m -predict-timeout 5m
     privileged: true
     networks:
     - internal
@@ -33,10 +35,12 @@ services:
     - nsqlookupd
     - dind-executor
     - storage
+    - orchestrator
 
   # Docker-in-Docker container to run untrusted code
   dind-executor:
     build: ../morpheo-go-packages/utils/dind-daemon
+    container_name: morpheo_dind
     mem_limit: 512m
     memswap_limit: 0
     restart: unless-stopped
@@ -49,6 +53,7 @@ services:
 
   # Nsqlookupd: service discovery for Nsqd
   nsqlookupd:
+    container_name: morpheo_nsqlookupd
     image: nsqio/nsq:latest
     mem_limit: 16m
     memswap_limit: 0
@@ -62,6 +67,7 @@ services:
   # Nsqd: the distributed broker
   nsqd:
     image: nsqio/nsq:latest
+    container_name: morpheo_nsqd
     mem_limit: 32m
     memswap_limit: 0
     restart: unless-stopped
@@ -72,6 +78,7 @@ services:
   # Nsq Admin frontend
   nsqadmin:
     image: nsqio/nsq:latest
+    container_name: morpheo_nsqadmin
     mem_limit: 16m
     memswap_limit: 0
     restart: unless-stopped
@@ -84,18 +91,19 @@ services:
   # Storage
   storage:
     build: ../morpheo-storage/api
+    container_name: morpheo_storage
     restart: unless-stopped
-    command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD} -blobstore "gc" -gc-bucket "morpheo-storage"
+    command: -host 0.0.0.0 -port 80 -user ${STORAGE_AUTH_USER} -password ${STORAGE_AUTH_PASSWORD}
     ## Stops the container from taking up all the cache memory on big file
     ## uploads
     mem_limit: 256m
     memswap_limit: 1024m
     volumes:
     - ./data/storage:/data
-    - ${GOOGLE_APPLICATION_CREDENTIALS_DIR}:/.gcloud
+    # - ${GOOGLE_APPLICATION_CREDENTIALS_DIR}:/.gcloud
     - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
-    environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=/.gcloud/credentials
+    # environment:
+    # - GOOGLE_APPLICATION_CREDENTIALS=/.gcloud/credentials
     ports:
     - "${STORAGE_PORT}:80/tcp"
     networks:
@@ -106,10 +114,11 @@ services:
   # Postgres instance for the storage service
   postgres:
     image: postgres:alpine
+    container_name: morpheo_postgres
     mem_limit: 64m
     memswap_limit: 0
     volumes:
-    - ./data/postgres:/var/lib/postgres
+    - ./data/postgresql:/var/lib/postgresql/data
 
     environment:
     - POSTGRES_PASSWORD=p
@@ -121,13 +130,15 @@ services:
   # Orchestrator
   orchestrator:
     build: ../morpheo-orchestrator
+    container_name: morpheo_orchestrator
     ports:
       - "${ORCHESTRATOR_PORT}:5000"
     environment:
-      - MONGO_HOST=mongodb
+      - MONGO_HOST=mongo
       - CORS=True
-      - USER_AUTH=test
-      - PWD_AUTH=test
+      - USER_AUTH=u
+      - PWD_AUTH=p
+      - COMPUTE_URL=http://compute
     networks:
       - internal
     depends_on:
@@ -138,8 +149,9 @@ services:
   # Mongo instance for the orchestrator service
   mongo:
     image: mongo:3.4
+    container_name: morpheo_mongo
     volumes:
-      - ./data/orchestrator:/data/db
+      - ./data/mongo:/data/db
     ports:
       - "${MONGO_PORT}:27017"
     networks:
