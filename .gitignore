@@ -16,3 +16,6 @@ tags
 
 ## Repo specific files
 data
+
+# orchestrator files
+.coverage
