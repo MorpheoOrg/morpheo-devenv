@@ -84,8 +84,14 @@ Note that `make up` does the following when needed:
 The Devenv provide a script test/integration.go that tests that the whole plateform works.
 
 ##### Setup
-Download the fixtures data: you will need real data and a `fixtures.yaml` file to perform the test.
-The fixtures path can be specified in the Makefile, the default path being *$GOPATH/src/github.com/MorpheoOrg/morpheo-devenv/data/fixtures*.
+You will need some real data and a `.yaml` file containing the metadata to perform the test. The paths of the data folder and the `.yaml` file can be specified in the Makefile.
+
+To perform the tests, you can use the `fixtures.yaml` in `/tests/`, and download the associated data from Google Cloud Storage:
+```
+cd morpheo-devenv/data   # default path for the fixtures data
+wget https://storage.googleapis.com/morpheo-storage/fixtures/fixtures.tar.gz
+tar -zxvf fixtures.tar.gz   # to un-tar-gz the fixtures
+```
 
 ##### Usage
 ```
