@@ -69,6 +69,7 @@ clean: down
 	sudo rm -rf data/mongo data/storage data/postgresql
 
 tests:
+	@$(MAKE) -C ../morpheo-go-packages vendor
 	@$(PATH_METADATA) $(PATH_DATA) go run ./tests/integration.go
 
 full-tests:
