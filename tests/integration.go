@@ -209,7 +209,7 @@ func getLastLearnupletStatus() (string, error) {
 	}
 
 	// Unmarshal the learnuplet
-	var learnuplets map[string][]common.LearnUplet
+	var learnuplets map[string][]common.Learnuplet
 	err = json.NewDecoder(bytes.NewReader(body)).Decode(&learnuplets)
 	if err != nil {
 		return "", fmt.Errorf("Error un-marshaling learnuplet: %s. Body: %s", err, string(body))
