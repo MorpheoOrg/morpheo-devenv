@@ -33,44 +33,60 @@
 # knowledge of the CeCILL license and that you accept its terms.
 
 BIN_TARGETS = compute storage
+BIN_CLEAR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-clean)
 VENDOR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-vendor)
 
 COMPOSE_CMD = STORAGE_PORT=8081 STORAGE_AUTH_USER=u STORAGE_AUTH_PASSWORD=p \
-  			  ORCHESTRATOR_PORT=8083 ORCHESTRATOR_AUTH_USER=test ORCHESTRATOR_AUTH_PASSWORD=test \
-  			  MONGO_PORT=27017 \
 			  COMPUTE_PORT=8082 NSQ_ADMIN_PORT=8085 \
 			  docker-compose
 
-PATH_METADATA = PATH_METADATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml
-PATH_DATA = PATH_DATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/data/fixtures
+PATH_FIXTURES = PATH_METADATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml
 
 # Target configuration
 .DEFAULT: up
-.PHONY: $(BIN_TARGETS) $(VENDOR_TARGETS) up stop logs down clean tests full-tests
+.PHONY: $(BIN_TARGETS) $(BIN_CLEAR_TARGETS) bin-clear $(VENDOR_TARGETS) morpheo-network up stop logs down clean tests full-tests
 
 $(BIN_TARGETS):
 	@echo "\n**** [$@] builds ****" | tr a-z A-Z
 	@$(MAKE) -C ../morpheo-$@ bin
 
+$(BIN_CLEAR_TARGETS):
+	@echo "\n**** [$@] builds ****" | tr a-z A-Z
+	@$(MAKE) -C ../morpheo-$(subst -clean,,$@) bin-clean
+
+bin-clean: $(BIN_CLEAR_TARGETS)
+
 $(VENDOR_TARGETS):
 	@echo "\n**** [$(subst -vendor,,$@)] vendor update ****" | tr a-z A-Z
 	@$(MAKE) -C ../morpheo-$(subst -vendor,,$@) vendor vendor-replace-local
 
-up: $(VENDOR_TARGETS) $(BIN_TARGETS)
+network:
+	cd ../morpheo-orchestrator-bootstrap && \
+	./byfn.sh -m up -i
+
+network-down:
+	cd ../morpheo-orchestrator-bootstrap && \
+	./byfn.sh -m down
+
+up: $(VENDOR_TARGETS) $(BIN_TARGETS) # morpheo-network
 	@echo  "\n**** [DEVENV] DOCKER-COMPOSE UP ****"
 	$(COMPOSE_CMD) up -d --build
+
 stop:
 	$(COMPOSE_CMD) stop
+
 logs:
-	$(COMPOSE_CMD) logs --follow storage compute compute-worker orchestrator
-down:
+	$(COMPOSE_CMD) logs --follow storage compute compute-worker
+
+down: # morpheo-network-down
 	$(COMPOSE_CMD) down
+
 clean: down
 	sudo rm -rf data/mongo data/storage data/postgresql
 
+
 tests:
-	@$(MAKE) -C ../morpheo-go-packages vendor
-	@$(PATH_METADATA) $(PATH_DATA) go run ./tests/integration.go
+	docker-compose -f tests/docker-compose.yaml up
 
 full-tests:
 	$(MAKE) -C ../morpheo-compute tests

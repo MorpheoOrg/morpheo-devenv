@@ -1,72 +1,35 @@
-# ORCHESTRATOR
-orchestrator:
+# CONFIG
+pathDataFolder: ../data/fixtures
+
+# CHAINCODE metadata
+chaincode:
   algo:
-  - uuid: 0885fe91-da5a-4896-988f-3625b53b38b9
+  - storageAddress: 0885fe91-da5a-4896-988f-3625b53b38b9
     name: example_sklearn.tar.gz
-    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
+    problemKeys:
+    - problem_2869781a-c481-4ed7-b88a-a5073bae8326
 
   data:
-  - uuid: 8436d362-fe38-4d35-96c2-4496451758cf
-    problems:
-    - 2869781a-c481-4ed7-b88a-a5073bae8326
-  - uuid: 222af310-c8dc-4d5d-9447-250d6c1de4ac
-    problems:
-    - 2869781a-c481-4ed7-b88a-a5073bae8326
-  - uuid: 6c619a93-5989-4153-90b8-ba93328ebc5f
-    problems:
-    - 2869781a-c481-4ed7-b88a-a5073bae8326
-  - uuid: 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
-    problems:
-    - 2869781a-c481-4ed7-b88a-a5073bae8326
-
-  problem:
-  - uuid: 2869781a-c481-4ed7-b88a-a5073bae8326
-    workflow: e568587d-572c-4714-8084-378ed50d1c52
-    size_train_dataset: 1
-    test_dataset:
-    - 6c619a93-5989-4153-90b8-ba93328ebc5f
-    - 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
+  - storageAddress: 8436d362-fe38-4d35-96c2-4496451758cf
+    problemKeys:
+    - problem_2869781a-c481-4ed7-b88a-a5073bae8326
+  - storageAddress: 222af310-c8dc-4d5d-9447-250d6c1de4ac
+    problemKeys:
+    - problem_2869781a-c481-4ed7-b88a-a5073bae8326
 
   prediction:
   - data: 8436d362-fe38-4d35-96c2-4496451758cf
     problem: 2869781a-c481-4ed7-b88a-a5073bae8326
 
-  learnuplet:
-  - algo: 0885fe91-da5a-4896-988f-3625b53b38b9
-    model_end: 3ba6441e-d9f7-45a7-8187-ba93125bcc46
-    model_start: 0885fe91-da5a-4896-988f-3625b53b38b9
-    perf:
-    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
-    rank: 0
-    status: todo
-    test_data:
+  problem:
+  - storageAddress: 2869781a-c481-4ed7-b88a-a5073bae8326
+    sizeTrainDataset: 1
+    testData:
     - 6c619a93-5989-4153-90b8-ba93328ebc5f
     - 2ee0dd40-2fe7-402a-a128-c47204a6a5a0
-    test_perf:
-    timestamp_creation: 1509976838
-    timestamp_done:
-    train_data:
-    - 8436d362-fe38-4d35-96c2-4496451758cf
-    train_perf:
-    uuid: a13e8291-11e2-4825-bbd7-28b8aa1aa8cc
-    worker: 00000000-0000-0000-0000-000000000000
-    workflow: e568587d-572c-4714-8084-378ed50d1c52
 
-  preduplet:
-  - uuid: 1d0255fb-d728-440b-8fd2-be86e03cc22b
-    problem: 2869781a-c481-4ed7-b88a-a5073bae8326
-    workflow: e568587d-572c-4714-8084-378ed50d1c52
-    model: 8ddf97a8-4a18-4449-a70a-cb392173ba31
-    data: 6c619a93-5989-4153-90b8-ba93328ebc5f
-    prediction_storage_uuid:
-    worker: bbed7da3-cdd9-4132-b664-f6245870910c
-    status: todo
-    timestamp_request: 646846200
-    timestamp_done:
 
-# ----------------------------------------------------------------------------
-
-# STORAGE
+# STORAGE metadata
 storage:
   algo:
   - uuid: 0885fe91-da5a-4896-988f-3625b53b38b9
@@ -83,6 +46,6 @@ storage:
     algo: 0885fe91-da5a-4896-988f-3625b53b38b9
 
   problem:
-  - uuid: e568587d-572c-4714-8084-378ed50d1c52
+  - uuid: 2869781a-c481-4ed7-b88a-a5073bae8326
     name: MESA TEST, for test purposes
     description: For test purposes, description at https://github.com/MorpheoOrg/hypnogram-wf/blob/master/README.md

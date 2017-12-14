@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  integration_tests:
+    build: .
+    container_name: integration_tests
+    volumes:
+    - "${GOPATH}:/go"
+    - "../config_aphp.yaml:/secrets/config.yaml"
+    - ../../morpheo-orchestrator-bootstrap/artifacts/crypto-config:/secrets/crypto-config
+    working_dir: /go/src/github.com/MorpheoOrg/morpheo-devenv/tests
+    command: go run integration.go
+    networks:
+    - morpheo_network
+    tty: true
+
+networks:
+  morpheo_network:
+    external:
+      name: net_byfn
