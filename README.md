@@ -29,7 +29,7 @@ $GOPATH/src/github.com/MorpheoOrg
                                 |___morpheo-compute
                                 |___morpheo-storage
                                 |___morpheo-go-packages
-                                |___morpheo-orchestrator
+                                |___morpheo-orchestrator-bootstrap
 
 ```
 
@@ -42,29 +42,41 @@ git clone https://github.com/MorpheoOrg/morpheo-devenv.git &&
 git clone https://github.com/MorpheoOrg/morpheo-compute.git &&
 git clone https://github.com/MorpheoOrg/morpheo-storage.git &&
 git clone https://github.com/MorpheoOrg/morpheo-go-packages.git &&
-git clone https://github.com/MorpheoOrg/morpheo-orchestrator.git
+git clone https://github.com/MorpheoOrg/morpheo-orchestrator-bootstrap.git
 ```
 
 
 #### Start the Development Environment
-Once the directory architecture is in place, you can launch the Morpheo Environment just by running in the morpheo-devenv repository:
+Once the directory architecture is in place, you have to follow the instructions
+of `morpheo-orchestrator-bootstrap` to set up a fabric network.
+
+Once the fabric network is set, you can launch the network by running in the `morpheo-devenv` repository:
+```
+make network
+```
+
+Then you can launch the Compute and Storage Morpheo services by running:
 ```
 make up
 ```
 
 The first time may last quite a while, as all the libraries and the docker images need to be pulled.
 
-Once `make up` has run, you can check with your favourite tool (such as `ctop`) that the containers have been properly launched. To see Morpheo in action, run the integration tests.
+Once `make up` has run, you can check with your favourite tool (such as `ctop`) that the containers have been properly launched. To see Morpheo in action, run the [integration tests](#tests).
 
 Note that the exposed ports for the services can be changed in the Makefile, the default one being:
 * Storage: 8081
 * Compute: 8082
-* Orchestrator: 8083
 
 ## Usage
 GNU Make is used to interact with the devenv:
 
-* `make up`: **start the devenv**, by updating the vendor, building the binaries, and running a `docker-compose up`
+##### Fabric network
+* `make network`: **start the network**, by running a `./byfn.sh -m up -i` in `morpheo-orchestrator-bootstrap`
+* `make network-down`: **clean the network**, by running a `./byfn.sh -m down`
+
+##### Compute and Storage
+* `make up`: **start compute and storage**, updating the vendor, building the binaries and running a `docker-compose up`
 * `make stop`: **stop all the containers**, by running `docker-compose stop`
 * `make logs`: **show the logs of the main containers**, by running `docker-compose logs`
 * `make down`: **delete all the containers**, by running `docker-compose down`
@@ -81,16 +93,14 @@ Note that `make up` does the following when needed:
 
 
 ## Tests
-The Devenv provide a script test/integration.go that tests that the whole plateform works.
+The Devenv provide a script tests/integration.go that tests that the whole plateform works.
 
 ##### Setup
-You will need some real data and a `.yaml` file containing the metadata to perform the test. The paths of the data folder and the `.yaml` file can be specified in the Makefile.
-
-To perform the tests, you can use the `fixtures.yaml` in `/tests/`, and download the associated data from Google Cloud Storage:
+To perform the tests, you have to download the associated data from Google Cloud Storage and put it in the right folder:
 ```
 cd morpheo-devenv/data   # default path for the fixtures data
 wget https://storage.googleapis.com/morpheo-storage/fixtures/fixtures.tar.gz
-tar -zxvf fixtures.tar.gz   # to un-tar-gz the fixtures
+tar -zxvf fixtures.tar.gz && rm fixtures.tar.gz
 ```
 
 ##### Usage
