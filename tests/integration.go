@@ -43,6 +43,8 @@ func main() {
 	peer, err = client.NewPeerAPI(pathPeerConfig, "Aphp", "mychannel", "mycc")
 	check(err, "[peer-API] Failed to create peerAPI")
 
+	// testReportLearnDone("learnuplet_c3d2e4b1-9df6-441d-8efd-ebc16defa55b")
+
 	testLearnPred()
 
 	log.Println("GREAT SUCCESS!")
