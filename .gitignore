@@ -19,3 +19,14 @@ data
 
 # orchestrator files
 .coverage
+
+# Outputs of tests/fixtures Makefile
+tests/fixtures/data/model
+tests/fixtures/data/perf
+tests/fixtures/data/untargetedTest
+tests/fixtures/data/train/pred
+tests/fixtures/data/test/pred
+tests/fixtures/algo/fastest/*.tar.gz
+tests/fixtures/algo/fastest/fastest
+tests/fixtures/problem/fastest/*.tar.gz
+tests/fixtures/problem/fastest/problem_fastest

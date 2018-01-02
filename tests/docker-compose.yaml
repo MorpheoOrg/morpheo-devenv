@@ -5,7 +5,7 @@ services:
     build: .
     container_name: integration_tests
     volumes:
-    - "${GOPATH}:/go"
+    - "../../../MorpheoOrg:/go/src/github.com/MorpheoOrg"
     - "../config_aphp.yaml:/secrets/config.yaml"
     - ../../morpheo-orchestrator-bootstrap/artifacts/crypto-config:/secrets/crypto-config
     working_dir: /go/src/github.com/MorpheoOrg/morpheo-devenv/tests

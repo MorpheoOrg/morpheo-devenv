@@ -35,12 +35,12 @@
 BIN_TARGETS = compute storage
 BIN_CLEAR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-clean)
 VENDOR_TARGETS = $(foreach TARGET, $(BIN_TARGETS), $(TARGET)-vendor)
+FIXTURE_TARGETS = data/fixtures/algo/fastest data/fixtures/problem/fastest data/fixtures/data/fastest
 
 COMPOSE_CMD = STORAGE_PORT=8081 STORAGE_AUTH_USER=u STORAGE_AUTH_PASSWORD=p \
 			  COMPUTE_PORT=8082 NSQ_ADMIN_PORT=8085 \
 			  docker-compose
 
-PATH_FIXTURES = PATH_METADATA=$(GOPATH)/src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml
 
 # Target configuration
 .DEFAULT: up
@@ -85,8 +85,12 @@ clean: down
 	sudo rm -rf data/mongo data/storage data/postgresql
 
 
-tests:
+tests: $(FIXTURE_TARGETS)
+	$(MAKE) -C ../morpheo-go-packages vendor
 	docker-compose -f tests/docker-compose.yaml up
+
+$(FIXTURE_TARGETS):
+	$(MAKE) -C tests/fixtures gen-fixtures
 
 full-tests:
 	$(MAKE) -C ../morpheo-compute tests

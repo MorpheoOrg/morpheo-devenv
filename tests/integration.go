@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"os"
-	"path"
 	"regexp"
 	"time"
 
@@ -14,11 +12,8 @@ import (
 )
 
 var (
-	defaultpathFixturesYAML = path.Join(os.Getenv("GOPATH"), "src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures.yaml")
-	defaultPathPeerConfig   = "/secrets/config.yaml"
-
-	pathFixturesYAML = Getenv("PATH_FIXTURES", defaultpathFixturesYAML)
-	pathPeerConfig   = Getenv("PATH_PEER_CONFIG", defaultPathPeerConfig)
+	pathFixturesYAML = "/go/src/github.com/MorpheoOrg/morpheo-devenv/tests/fixtures/metadata.yaml"
+	pathPeerConfig   = "/secrets/config.yaml"
 
 	storage = &client.StorageAPI{
 		Hostname: "storage",
@@ -128,7 +123,8 @@ func postFixturesStorage(fixtures *common.DataParser) error {
 		log.Printf("[storage] Posting problem/%s...", resource.ID)
 		file, err := fixtures.GetData("problem", resource.ID.String())
 		if err != nil {
-			log.Println(err)
+			log.Printf("[storage]%s", err)
+			continue
 		}
 		if err := storage.PostProblem(resource, 666, file); err != nil {
 			if !resourceAlreadyExist(err) {
@@ -142,7 +138,8 @@ func postFixturesStorage(fixtures *common.DataParser) error {
 		log.Printf("[storage] Posting data/%s...", resource.ID)
 		file, err := fixtures.GetData("data", resource.ID.String())
 		if err != nil {
-			log.Println(err)
+			log.Printf("[storage]%s", err)
+			continue
 		}
 		if err := storage.PostData(resource, 666, file); err != nil {
 			if !resourceAlreadyExist(err) {
@@ -157,7 +154,8 @@ func postFixturesStorage(fixtures *common.DataParser) error {
 		log.Printf("[storage] Posting algo/%s...", resource.ID)
 		file, err := fixtures.GetData("algo", resource.ID.String())
 		if err != nil {
-			log.Println(err)
+			log.Printf("[storage]%s", err)
+			continue
 		}
 		if err := storage.PostAlgo(resource, 666, file); err != nil {
 			if !resourceAlreadyExist(err) {
@@ -172,7 +170,8 @@ func postFixturesStorage(fixtures *common.DataParser) error {
 	// 	log.Printf("[storage] POST Model %s", resource.ID)
 	// 	file, err := fixtures.GetData("model", resource.ID.String())
 	// 	if err != nil {
-	// 		log.Println(err)
+	// 		log.Printf("[storage]%s", err)
+	//		continue
 	// 	}
 	// 	if err := storage.PostModel(&resource, file, 3933); err != nil {
 	// 		return err
@@ -268,15 +267,6 @@ func getLastLearnupletStatus() (string, error) {
 // ============================================
 // Utils
 // ============================================
-
-// Getenv returns key if env variable exist, fallback otherwise
-func Getenv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
-	}
-	return value
-}
 
 func check(err error, msg string) {
 	if err != nil {

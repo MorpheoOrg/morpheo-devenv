@@ -105,14 +105,6 @@ Note that the separator for `args` is `|`.
 ## Tests
 The Devenv provide a script `tests/integration.go` which tests that the whole plateform works.
 
-##### Setup
-To perform the tests, you have to download the associated data from Google Cloud Storage and put it in the right folder:
-```
-cd morpheo-devenv/data   # default path for the fixtures data
-wget https://storage.googleapis.com/morpheo-storage/fixtures/fixtures.tar.gz
-tar -zxvf fixtures.tar.gz && rm fixtures.tar.gz
-```
-
 ##### Usage
 ```
 make tests
