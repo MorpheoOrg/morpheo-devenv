@@ -20,6 +20,7 @@ dev. environment.
 * [dep](https://github.com/golang/dep) the official Go dependency management tool. You can install it by running `go get github.com/golang/dep/cmd/dep`
 * [Docker](https://docs.docker.com/engine/installation/) and [Docker Compose](https://docs.docker.com/compose/install/)
 * [GNU Make](https://www.gnu.org/software/make/)
+* libltdl-dev package, installed via `sudo apt-get install -y libltdl-dev`
 
 #### Set the directory tree
 To build and launch the Morpheo services, the development environment searches for their respective git repositories **in the parent directory**. Consequently, the directory architecture should be like this:
@@ -29,7 +30,7 @@ $GOPATH/src/github.com/MorpheoOrg
                                 |___morpheo-compute
                                 |___morpheo-storage
                                 |___morpheo-go-packages
-                                |___morpheo-orchestrator-bootstrap
+                                |___morpheo-fabric-bootstrap
                                 |___morpheo-orchestrator-chaincode
 ```
 
@@ -41,14 +42,14 @@ git clone https://github.com/MorpheoOrg/morpheo-devenv.git &&
 git clone https://github.com/MorpheoOrg/morpheo-compute.git &&
 git clone https://github.com/MorpheoOrg/morpheo-storage.git &&
 git clone https://github.com/MorpheoOrg/morpheo-go-packages.git &&
-git clone https://github.com/MorpheoOrg/morpheo-orchestrator-bootstrap.git &&
+git clone https://github.com/MorpheoOrg/morpheo-fabric-bootstrap.git &&
 git clone https://github.com/MorpheoOrg/morpheo-orchestrator-chaincode.git
 ```
 
 
 #### Start the Development Environment
 Once the directory architecture is in place, you have to follow the instructions
-of `morpheo-orchestrator-bootstrap` to set up a fabric network.
+in `morpheo-fabric-bootstrap` to set up a fabric network.
 
 Once the fabric network is set, you can launch the network by running in the `morpheo-devenv` repository:
 ```
@@ -72,7 +73,7 @@ Note that the exposed ports for the services can be changed in the Makefile, the
 GNU Make is used to interact with the devenv:
 
 ##### Fabric network
-* `make network`: **start the network**, by running a `./byfn.sh -m up -i` in `morpheo-orchestrator-bootstrap`
+* `make network`: **start the network**, by running a `./byfn.sh -m up -i` in `morpheo-fabric-bootstrap`
 * `make network-down`: **clean the network**, by running a `./byfn.sh -m down`
 
 ##### Compute and Storage

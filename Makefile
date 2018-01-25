@@ -61,11 +61,11 @@ $(VENDOR_TARGETS):
 	@$(MAKE) -C ../morpheo-$(subst -vendor,,$@) vendor vendor-replace-local
 
 network:
-	cd ../morpheo-orchestrator-bootstrap && \
+	cd ../morpheo-fabric-bootstrap && \
 	./byfn.sh -m up -i
 
 network-down:
-	cd ../morpheo-orchestrator-bootstrap && \
+	cd ../morpheo-fabric-bootstrap && \
 	./byfn.sh -m down
 
 up: $(VENDOR_TARGETS) $(BIN_TARGETS) # morpheo-network
