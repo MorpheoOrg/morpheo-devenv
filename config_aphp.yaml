@@ -210,7 +210,7 @@ certificateAuthorities:
       verify: true
     tlsCACerts:
       # Comma-Separated list of paths
-      path: ../MorpheoOrg/morpheo-orchestrator-bootstrap/artifacts/crypto-config/peerOrganizations/aphp.morpheo.co/peers/peer0.aphp.morpheo.co/tls/ca.crt
+      path: ../MorpheoOrg/morpheo-fabric-bootstrap/artifacts/crypto-config/peerOrganizations/aphp.morpheo.co/peers/peer0.aphp.morpheo.co/tls/ca.crt
       # Client key and cert for SSL handshake with Fabric CA
       client:
        keyfile:

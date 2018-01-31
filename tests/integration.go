@@ -198,7 +198,7 @@ func registerFixturesChaincode(fixtures *common.DataParser) error {
 	// Register Data
 	for _, resource := range fixtures.Chaincode.Data {
 		log.Printf("[peer-API] Registering data %s...", resource.StorageAddress)
-		_, _, err := peer.RegisterItem("data", resource.StorageAddress, resource.ProblemKeys)
+		_, _, err := peer.RegisterItem("data", resource.StorageAddress, resource.ProblemKeys, resource.Name)
 		if err != nil {
 			return fmt.Errorf("[peer-API] Error registering data %s: %s", resource.StorageAddress, err)
 		}
@@ -207,7 +207,7 @@ func registerFixturesChaincode(fixtures *common.DataParser) error {
 	// Register Algo
 	for _, resource := range fixtures.Chaincode.Algo {
 		log.Printf("[peer-API] Registering algo %s...", resource.StorageAddress)
-		_, _, err := peer.RegisterItem("algo", resource.StorageAddress, resource.ProblemKeys)
+		_, _, err := peer.RegisterItem("algo", resource.StorageAddress, resource.ProblemKeys, resource.Name)
 		if err != nil {
 			return fmt.Errorf("[peer-API] Error registering algo %s: %s", resource.StorageAddress, err)
 		}

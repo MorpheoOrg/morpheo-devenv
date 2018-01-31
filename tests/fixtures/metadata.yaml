@@ -5,23 +5,27 @@ pathDataFolder: ../data/fixtures
 chaincode:
   algo:
   - storageAddress: 8f5c97ff-ee61-4cf1-a0ac-6852bac08408
-    name: fast_test
     problemKeys:
     - problem_c89d0eb7-2336-48d7-873b-27073ccd363f
+    name: fast_test
 
   data:
   - storageAddress: 8bc11648-d983-4a62-9ea2-590901f374ff
     problemKeys:
     - problem_c89d0eb7-2336-48d7-873b-27073ccd363f
+    name: testData
   - storageAddress: af7fcc0f-7a58-4a74-bfa2-8fb6e12008eb
     problemKeys:
     - problem_c89d0eb7-2336-48d7-873b-27073ccd363f
+    name: testData
   - storageAddress: 48557ec1-3205-403a-b82c-843fd9b03f5b
     problemKeys:
     - problem_c89d0eb7-2336-48d7-873b-27073ccd363f
+    name: testData
   - storageAddress: cbddd90c-f574-43d9-8d1f-b4989678a09b
     problemKeys:
     - problem_c89d0eb7-2336-48d7-873b-27073ccd363f
+    name: testData
 
   prediction:
   - data: 8bc11648-d983-4a62-9ea2-590901f374ff
